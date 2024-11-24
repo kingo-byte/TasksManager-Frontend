@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../Services/auth.service';
@@ -13,12 +13,16 @@ import { AuthService } from '../../../../Services/auth.service';
 })
 export class SignInComponent {
   signInForm!: FormGroup;
-  
+  isLoggedIn = computed(() => this.authService.isLoggedInSignal());
   constructor(private signInBuilder: FormBuilder, private router: Router, private authService: AuthService) { 
     this.signInForm = this.signInBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required] 
     });
+
+    if(this.isLoggedIn()) {
+      this.router.navigate(['main']); 
+    }
   }
 
     onSignInSubmit() {

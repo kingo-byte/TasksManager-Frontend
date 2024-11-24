@@ -29,12 +29,13 @@
 <nav class="navbar bg-light sgbl-navbar fixed-top">
     <div class="vw-100 d-flex justify-content-between">
       <!-- Toggle Button to open the offcanvas sidebar -->
-      <button class="navbar-toggler" type="button" (click)="open(sidebarContent)">
-        <fa-icon [icon]="faBars"></fa-icon>
-      </button>
-  
 
-        <!-- Profile Dropdown Menu -->
+      @if(isLoggedIn())
+      {
+        <button class="navbar-toggler" type="button" (click)="open(sidebarContent)">
+          <fa-icon [icon]="faBars"></fa-icon>
+        </button>
+
         <div class="dropdown" ngbDropdown>
           <a class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" ngbDropdownToggle>
             <svg class="rounded-circle" width="40" height="40">
@@ -49,7 +50,7 @@
             <li><a class="dropdown-item" (click)="logout()">Sign out</a></li>
           </ul>
         </div>
-      
+      }
     </div>
   </nav>
   
