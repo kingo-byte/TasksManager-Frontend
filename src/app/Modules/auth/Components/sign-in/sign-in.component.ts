@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../Services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,24 +14,29 @@ import { Router } from '@angular/router';
 export class SignInComponent {
   signInForm!: FormGroup;
   
-  constructor(private signInBuilder: FormBuilder, private router: Router){
+  constructor(private signInBuilder: FormBuilder, private router: Router, private authService: AuthService) { 
     this.signInForm = this.signInBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required] 
     });
   }
 
-  onSignInSubmit()
-  {
-     if(this.signInForm.valid){
-       console.log(this.signInForm.value);
+    onSignInSubmit() {
+      const request = { 
+          email: this.signInForm.get('email')!.value,
+          password: this.signInForm.get('password')!.value 
+      };
 
-       //make your call to the backend
-      //  this.commonService.login('test-token');
-       this.router.navigate(['']);
-     }  
-     else{
-      this.signInForm.markAllAsTouched();
-     }
+      if (this.signInForm.valid) {
+          this.authService
+              .signIn(request)
+              .subscribe((response: string) => {
+                  this.authService.setToken(response);
+                  this.authService.isLoggedInSignal.set(true);
+                  this.router.navigate(['main']);
+              });
+      } else {
+          this.signInForm.markAllAsTouched();
+      }
   }
 }
