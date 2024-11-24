@@ -19,8 +19,7 @@ export class NavbarComponent {
 
   private offcanvasService = inject(NgbOffcanvas);
   faBars = faBars;
-  isDashboardCollapsed = true;
-
+  
   open(content: TemplateRef<any>) {
     this.offcanvasService.open(content, {
       ariaLabelledBy: 'sidebar',
@@ -30,6 +29,7 @@ export class NavbarComponent {
 
   logout(){
     this.authService.logout();
+    this.authService.isLoggedInSignal.set(false); 
     this.router.navigate(['']);
   }
 }
