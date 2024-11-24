@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SignInComponent } from '../auth/Components/sign-in/sign-in.component';
+import { DashboardComponent } from './Components/dashboard/dashboard.component';
 
 const routes: Routes = [
-
+  {path : '', component : DashboardComponent}
 ];
 
 @NgModule({

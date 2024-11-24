@@ -1,17 +1,84 @@
 <div class="container-fluid router-content">
-    <div class="row h-100 flex-column"> 
-        <nav class="row">
-            <div class="col">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active">Home</li>
-            </ol>
-            </div>
-        </nav>
-
-      <div class="col d-flex justify-content-center align-items-center flex-grow-1 ">
-        <div class="home-page text-center">
-            <h1 class="home-title">Welcome to Alerna Call Center</h1>
-        </div>
+    <!-- Breadcrumb Navigation -->
+    <div class="row">
+      <nav class="col">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#" class="text-decoration-none">Home</a>
+          </li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div>
+  
+    <!-- Filters and Add New Task Button -->
+    <div class="row mb-3 align-items-center">
+      <!-- Text Filter -->
+      <div class="col-md-4">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Filter tasks..."
+          [(ngModel)]="filterText"
+        />
+      </div>
+  
+      <!-- Status Filter -->
+      <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="filterStatus">
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+  
+      <!-- Add New Task Button -->
+      <div class="col-md-4 text-end">
+        <button class="btn btn-primary" (click)="addNewTask()">
+          <i class="bi bi-plus-lg"></i> Add New Task
+        </button>
       </div>
     </div>
-</div>
+  
+    <!-- Task Cards -->
+    <div class="row">
+      <div class="col-md-4 mb-4" *ngFor="let task of filteredTasks">
+        <div class="card h-100 shadow-sm position-relative">
+          <!-- Mark as Completed Button -->
+          <button
+            class="btn btn-sm btn-success position-absolute top-0 end-0 m-2"
+            *ngIf="task.status !== 'Completed'"
+            (click)="markAsCompleted(task)"
+            title="Mark as Completed"
+          >
+            <i class="bi bi-check-lg"></i>
+          </button>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ task.title }}</h5>
+            <p class="card-text flex-grow-1">{{ task.description }}</p>
+            <div class="mt-3">
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-success': task.status === 'Completed',
+                  'bg-warning text-dark': task.status === 'In Progress',
+                  'bg-secondary': task.status === 'Pending'
+                }"
+              >
+                {{ task.status }}
+              </span>
+              <button class="btn btn-sm btn-outline-secondary float-end">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- No Tasks Found Message -->
+      <div class="col-12" *ngIf="filteredTasks.length === 0">
+        <p class="text-center">No tasks match the current filters.</p>
+      </div>
+    </div>
+  </div>
+  
