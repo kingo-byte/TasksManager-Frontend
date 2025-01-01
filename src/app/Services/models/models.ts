@@ -18,3 +18,12 @@ export interface user
     lastModifiedDate?: Date;
     tasks?: task[];
 }
+
+export interface Lookup
+{
+    id: number;
+    tableName: string;
+    code: string;
+    value: string;
+    description: string
+}

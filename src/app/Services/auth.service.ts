@@ -3,7 +3,9 @@ import { Injectable, signal } from '@angular/core';
 import * as jwt_decode from 'jwt-decode';
 import { Observable } from 'rxjs';
 import { Environment } from '../Environment/environment.dev';
-import { SignInRequest, SignUpRequest } from './models/requests';
+import { RefreshTokenRequest, SignInRequest, SignUpRequest } from './models/requests';
+import { RefreshTokenResponse, SignInResponse } from './models/responses';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +14,18 @@ export class AuthService {
   isLoggedInSignal = signal<boolean>(this.isLoggedIn());
   decodedToken!: { [key: string]: string };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
-  signIn(request: SignInRequest): Observable<string> {
-    return this.http.post<string>(`${Environment.apiUrl}/auth/signIn`, request, { responseType: 'text' as 'json' });
+  signIn(request: SignInRequest): Observable<SignInResponse> {
+    return this.http.post<SignInResponse>(`${Environment.apiUrl}/api/auth/signIn`, request);
   }
 
   signUp(request: SignUpRequest): Observable<any> {
-    return this.http.post<Observable<any>>(`${Environment.apiUrl}/auth/signUp`, {request: request});
+    return this.http.post<Observable<any>>(`${Environment.apiUrl}/api/auth/signUp`, request );
+  }
+
+  refreshToken(request: RefreshTokenRequest): Observable<RefreshTokenResponse> {
+    return this.http.post<RefreshTokenResponse>(`${Environment.apiUrl}/api/auth/refreshToken`, request);
   }
 
   isLoggedIn(): boolean {
@@ -27,19 +33,29 @@ export class AuthService {
     return token ? true : false;
   }
 
-  setToken(token: string):void {
-    localStorage.setItem('access-token', token!)
+  setToken(token: string, refreshToken: string):void {
+    localStorage.setItem('access-token', token!);
+    localStorage.setItem('refresh-token', refreshToken!);
   }
 
   getToken(): string | null {
     return localStorage.getItem('access-token');
   }
 
-  getClaims (token: string): any {
+  getRefreshToken():string{
+    return localStorage.getItem('refresh-token')!;
+  }
+
+  getClaims (): any {
+      const token: string = this.getToken()!; 
       this.decodedToken = jwt_decode.jwtDecode(token);
   }
 
   logout(): void {  
     localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    this.isLoggedInSignal.set(false);
+
+    this.router.navigate(['']);
   }
 }

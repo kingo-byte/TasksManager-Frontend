@@ -19,3 +19,10 @@ export interface SignUpRequest {
     dueDate: Date;
   }
   
+  export interface GetLookupByTableNamesRequest {
+    tableNames: string;
+  }
+
+  export interface RefreshTokenRequest {
+     refreshToken: string;
+  }

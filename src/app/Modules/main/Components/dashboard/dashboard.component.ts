@@ -14,28 +14,28 @@ import { EditTaskModalComponent } from '../edit-task-modal/edit-task-modal.compo
 export class DashboardComponent {
   active = 1;
   filterText = '';
-  filterStatus = 'All';
+  filterStatus = 'ALL';
 
   tasks = [
     {
       title: 'Design Landing Page',
       description: 'Create a responsive landing page.',
-      status: 'In Progress',
+      status: 'INPROGRESS',
     },
     {
       title: 'Fix Bug #123',
       description: 'Resolve the issue with user login.',
-      status: 'Pending',
+      status: 'PENDING',
     },
     {
       title: 'Update Documentation',
       description: 'Add recent changes to the docs.',
-      status: 'Completed',
+      status: 'COMPLETED',
     },
     // Add more tasks as needed
   ];
 
-  statusOptions = ['All', 'Pending', 'In Progress', 'Completed'];
+  statusOptions = ['ALL', 'PENDING', 'INPROGRESS', 'COMPLETED'];
 
   constructor(private modalService: NgbModal) {}
 
@@ -46,7 +46,7 @@ export class DashboardComponent {
         task.description.toLowerCase().includes(this.filterText.toLowerCase());
 
       const matchesStatus =
-        this.filterStatus === 'All' || task.status === this.filterStatus;
+        this.filterStatus === 'ALL' || task.status === this.filterStatus;
 
       return matchesText && matchesStatus;
     });
@@ -60,6 +60,6 @@ export class DashboardComponent {
   }
 
   markAsCompleted(task: any) {
-    task.status = 'Completed';
+    task.status = 'COMPLETED';
   }
 }

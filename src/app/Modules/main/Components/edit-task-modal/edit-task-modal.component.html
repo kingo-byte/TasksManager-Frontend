@@ -41,8 +41,8 @@
         >
             @for (item of statusOptions; track $index) 
             {
-                <option [value]="item">
-                    {{ item }}
+                <option [value]="item.code">
+                    {{ item.description }}
                 </option>
             }
         </select>

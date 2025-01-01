@@ -3,6 +3,7 @@ import { Component, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../Services/auth.service';
+import { SignInResponse } from '../../../../Services/models/responses';
 
 @Component({
   selector: 'app-sign-in',
@@ -34,8 +35,12 @@ export class SignInComponent {
       if (this.signInForm.valid) {
           this.authService
               .signIn(request)
-              .subscribe((response: string) => {
-                  this.authService.setToken(response);
+              .subscribe((response) => {
+                  console.log(response.accessToken);
+                  console.log(response.refreshToken);
+                  
+
+                  this.authService.setToken(response.accessToken, response.refreshToken);
                   this.authService.isLoggedInSignal.set(true);
                   this.router.navigate(['main']);
               });

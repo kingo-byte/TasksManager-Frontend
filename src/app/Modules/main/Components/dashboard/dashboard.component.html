@@ -60,9 +60,9 @@
               <span
                 class="badge"
                 [ngClass]="{
-                  'bg-success': task.status === 'Completed',
-                  'bg-warning text-dark': task.status === 'In Progress',
-                  'bg-secondary': task.status === 'Pending'
+                  'bg-success': task.status === 'COMPLETED',
+                  'bg-warning text-dark': task.status === 'INPROGRESS',
+                  'bg-secondary': task.status === 'PENDING'
                 }"
               >
                 {{ task.status }}
