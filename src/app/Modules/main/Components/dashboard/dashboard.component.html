@@ -26,8 +26,9 @@
       <!-- Status Filter -->
       <div class="col-md-4">
         <select class="form-select" [(ngModel)]="filterStatus">
-          <option *ngFor="let status of statusOptions" [value]="status">
-            {{ status }}
+          <option value="">pick status</option>
+          <option *ngFor="let status of statusOptions" [value]="status.code">
+            {{ status.description }}
           </option>
         </select>
       </div>
@@ -47,7 +48,7 @@
           <!-- Mark as Completed Button -->
           <button
             class="btn btn-sm btn-success position-absolute top-0 end-0 m-2"
-            *ngIf="task.status !== 'Completed'"
+            *ngIf="task.statusCode !== 'COMPLETED'"
             (click)="markAsCompleted(task)"
             title="Mark as Completed"
           >
@@ -60,12 +61,12 @@
               <span
                 class="badge"
                 [ngClass]="{
-                  'bg-success': task.status === 'COMPLETED',
-                  'bg-warning text-dark': task.status === 'INPROGRESS',
-                  'bg-secondary': task.status === 'PENDING'
+                  'bg-success': task.statusCode === 'COMPLETED',
+                  'bg-warning text-dark': task.statusCode === 'INPROGRESS',
+                  'bg-secondary': task.statusCode === 'PENDING'
                 }"
               >
-                {{ task.status }}
+                {{ task.statusCode }}
               </span>
               <button class="btn btn-sm btn-outline-secondary float-end">
                 View Details

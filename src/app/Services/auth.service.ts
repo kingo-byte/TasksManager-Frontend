@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   isLoggedInSignal = signal<boolean>(this.isLoggedIn());
-  decodedToken!: { [key: string]: string };
+  decodedToken = signal<{ [key: string]: string } | null>(this.getClaims());
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -46,9 +46,14 @@ export class AuthService {
     return localStorage.getItem('refresh-token')!;
   }
 
-  getClaims (): any {
-      const token: string = this.getToken()!; 
-      this.decodedToken = jwt_decode.jwtDecode(token);
+  getClaims (): { [key: string]: string } | null  {
+    const token: string | null = this.getToken(); 
+
+    if(!token){
+      return null;
+    }
+
+    return jwt_decode.jwtDecode(token);
   }
 
   logout(): void {  
