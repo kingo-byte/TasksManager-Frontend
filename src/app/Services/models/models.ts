@@ -25,6 +25,6 @@ export interface Task {
     title: string;
     description: string;
     dueDate: string;
-    createdDate: Date;
-    lastModifiedDate: Date;
+    createdDate?: Date;
+    lastModifiedDate?: Date;
 }

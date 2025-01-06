@@ -18,7 +18,7 @@ import { AuthService } from '../../../../Services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   filterText = '';
-  filterStatus = '';
+  filterStatus = 'INPROGRESS';
   tasks: Task[]= [];
   statusOptions: Lookup[] = [];
   decodedToken = computed(() => this.authService.decodedToken())
@@ -36,13 +36,13 @@ export class DashboardComponent implements OnInit {
 
   addNewTask() {
     const modalRef = this.modalService.open(EditTaskModalComponent);
-    modalRef.componentInstance.taskAdded.subscribe((newTask: any) => {
-      this.tasks.push(newTask);
+    modalRef.componentInstance.taskAdded.subscribe((newTask: Task) => {
+      window.location.reload(); 
     });
   }
 
-  markAsCompleted(task: any) {
-    task.status = 'COMPLETED';
+  markAsCompleted(task: Task) {
+    task.statusCode = 'COMPLETED';
   }
 
   get filteredTasks() {
@@ -59,7 +59,6 @@ export class DashboardComponent implements OnInit {
     });
   }
   
-
   getLookupByTableNames(): void {
    const getLookupByTableNamesRequest: GetLookupByTableNamesRequest = {  tableNames: 'TaskStatus' };
 

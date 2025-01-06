@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, computed, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   NgbActiveModal,
   NgbModalModule,
 } from '@ng-bootstrap/ng-bootstrap';
-import { GetLookupByTableNamesRequest } from '../../../../Services/models/requests';
+import { EditTaskRequest, GetLookupByTableNamesRequest } from '../../../../Services/models/requests';
 import { CommonService } from '../../../../Services/common.service';
-import {Lookup} from '../../../../Services/models/models'
+import {Lookup, Task} from '../../../../Services/models/models'
+import { TaskService } from '../../../../Services/task.service';
+import { AuthService } from '../../../../Services/auth.service';
 
 @Component({
   selector: 'app-edit-task-modal',
@@ -15,38 +17,66 @@ import {Lookup} from '../../../../Services/models/models'
   styleUrl: './edit-task-modal.component.scss',
   templateUrl: './edit-task-modal.component.html',
 })
-export class EditTaskModalComponent {
-  @Output() taskAdded = new EventEmitter<any>();
+export class EditTaskModalComponent implements OnInit { 
+  @Output() taskAdded = new EventEmitter<Task>();
+  decodedToken = computed(() => this.authService.decodedToken())
 
-  task = {
+  task: Task = {
+    id: -1,
+    userId: parseInt(this.decodedToken()!['UserId']),
     title: '',
     description: '',
-    status: 'PENDING',
+    statusCode: '',
+    categoryCode: '',
+    dueDate: new Date().toISOString(),
   };
 
   statusOptions:Lookup[] = [];
+  categoryOptions:Lookup[] = [];
 
-  constructor(public activeModal: NgbActiveModal, public commonService: CommonService) {
+  constructor(
+    public activeModal: NgbActiveModal,
+    public commonService: CommonService,
+    private taskService: TaskService,
+    private authService: AuthService) {}
+
+  ngOnInit(): void {
     this.getLookupByTableNames();
   }
 
   submitForm() {
-    if (this.task.title && this.task.description) {
-      this.taskAdded.emit(this.task);
-      this.activeModal.close();
+    if (this.task.title.trim() && this.task.description.trim() && this.task.statusCode && this.task.categoryCode) {
+      this.editTask();
     }
   }
 
   getLookupByTableNames(): void {
-   const getLookupByTableNamesRequest: GetLookupByTableNamesRequest = {  tableNames: 'TaskStatus' };
+  const getLookupByTableNamesRequest: GetLookupByTableNamesRequest = {  tableNames: 'TaskStatus,TaskCategory' };
 
-   this.commonService.getLookupByTableNames(getLookupByTableNamesRequest).subscribe({
+  this.commonService.getLookupByTableNames(getLookupByTableNamesRequest).subscribe({
     next: (response) => {
       this.statusOptions = response.lookups['TaskStatus'];
+      this.categoryOptions = response.lookups['TaskCategory'];
     },
     error: (error) => { 
       console.log('Error: ', error);
     }
-   })
+  })
+  }
+
+  editTask(): void {
+      const request: EditTaskRequest = {
+        task: this.task
+      }
+
+      this.taskService.editTask(request).subscribe({
+        next: (response) => {
+          this.taskAdded.emit(this.task);
+          this.activeModal.close();
+        },
+        error: (error) => {
+          console.log('Error: ', error);
+        }
+    });
   }
 }

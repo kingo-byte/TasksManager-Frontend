@@ -13,5 +13,5 @@ export class UserService {
 
   getUserTasks(id: number): Observable<User> {
     return this.http.get<User>(`${Environment.apiUrl}/api/User/${id}/Tasks`);
-  } 
+  }
 }

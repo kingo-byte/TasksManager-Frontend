@@ -1,3 +1,5 @@
+import { Task } from "./models";
+
 export interface SignUpRequest {
     userName?: string;
     email?: string; 
@@ -11,12 +13,7 @@ export interface SignUpRequest {
   }
   
   export interface EditTaskRequest {
-    taskId: number; 
-    userId: number; 
-    categoryCode: string;
-    title: string; 
-    description: string;
-    dueDate: Date;
+    task:Task;
   }
   
   export interface GetLookupByTableNamesRequest {

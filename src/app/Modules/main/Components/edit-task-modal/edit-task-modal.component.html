@@ -26,20 +26,39 @@
           id="taskDescription"
           class="form-control"
           [(ngModel)]="task.description"
-          name="description"
           required
+          name="description"
         ></textarea>
       </div>
       <div class="mb-3">
-        <label for="taskStatus" class="form-label">Status</label>
+        <label for="select-status" class="form-label">Status</label>
         <select
-          id="taskStatus"
+          id="select-status"
           class="form-select"
-          [(ngModel)]="task.status"
-          name="status"
+          [(ngModel)]="task.statusCode"
+          name="statusCode"
           required
         >
+        <option value="">pick a status</option>
             @for (item of statusOptions; track $index) 
+            {
+                <option [value]="item.code">
+                    {{ item.description }}
+                </option>
+            }
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="select-category" class="form-label">Category</label>
+        <select
+          id="select-category"
+          class="form-select"
+          [(ngModel)]="task.categoryCode"
+          required
+          name="categoryCode"
+        >
+        <option value="">pick a category</option>
+            @for (item of categoryOptions; track $index) 
             {
                 <option [value]="item.code">
                     {{ item.description }}
