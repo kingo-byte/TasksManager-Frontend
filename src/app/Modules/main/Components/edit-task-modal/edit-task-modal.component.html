@@ -1,86 +1,115 @@
 <div class="modal-header">
-    <h4 class="modal-title">Add New Task</h4>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="activeModal.dismiss()"
-    ></button>
-  </div>
-  <div class="modal-body">
-    <form (ngSubmit)="submitForm()" #taskForm="ngForm">
-      <div class="mb-3">
-        <label for="taskTitle" class="form-label">Title</label>
-        <input
-          type="text"
-          id="taskTitle"
-          class="form-control"
-          [(ngModel)]="task.title"
-          name="title"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label for="taskDescription" class="form-label">Description</label>
-        <textarea
-          id="taskDescription"
-          class="form-control"
-          [(ngModel)]="task.description"
-          required
-          name="description"
-        ></textarea>
-      </div>
-      <div class="mb-3">
-        <label for="select-status" class="form-label">Status</label>
-        <select
-          id="select-status"
-          class="form-select"
-          [(ngModel)]="task.statusCode"
-          name="statusCode"
-          required
-        >
+  <h4 class="modal-title">Add New Task</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  ></button>
+</div>
+
+<div class="modal-body">
+  <form (ngSubmit)="submitForm()" #taskForm="ngForm">
+    <!-- Title -->
+    <div class="mb-3">
+      <label for="taskTitle" class="form-label">Title</label>
+      <input
+        type="text"
+        id="taskTitle"
+        class="form-control"
+        [(ngModel)]="task.title"
+        name="title"
+        required
+      />
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label for="taskDescription" class="form-label">Description</label>
+      <textarea
+        id="taskDescription"
+        class="form-control"
+        [(ngModel)]="task.description"
+        required
+        name="description"
+      ></textarea>
+    </div>
+
+    <!-- Status -->
+    <div class="mb-3">
+      <label for="select-status" class="form-label">Status</label>
+      <select
+        id="select-status"
+        class="form-select"
+        [(ngModel)]="task.statusCode"
+        name="statusCode"
+        required
+      >
         <option value="">pick a status</option>
-            @for (item of statusOptions; track $index) 
-            {
-                <option [value]="item.code">
-                    {{ item.description }}
-                </option>
-            }
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="select-category" class="form-label">Category</label>
-        <select
-          id="select-category"
-          class="form-select"
-          [(ngModel)]="task.categoryCode"
-          required
-          name="categoryCode"
-        >
+        @for (item of statusOptions; track $index) {
+          <option [value]="item.code">
+            {{ item.description }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Category -->
+    <div class="mb-3">
+      <label for="select-category" class="form-label">Category</label>
+      <select
+        id="select-category"
+        class="form-select"
+        [(ngModel)]="task.categoryCode"
+        required
+        name="categoryCode"
+      >
         <option value="">pick a category</option>
-            @for (item of categoryOptions; track $index) 
-            {
-                <option [value]="item.code">
-                    {{ item.description }}
-                </option>
-            }
-        </select>
-      </div>
-      <div class="text-end">
+        @for (item of categoryOptions; track $index) {
+          <option [value]="item.code">
+            {{ item.description }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Due Date -->
+    <div class="mb-3">
+      <label for="input-DueDate" class="form-label">Due Date</label>
+      <div class="input-group">
+        <input
+          id="input-DueDate"
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dueDate"
+          [(ngModel)]="dueDateModel"
+          ngbDatepicker
+          #d="ngbDatepicker"
+        />
         <button
+          class="btn btn-outline-secondary bi bi-calendar3"
+          (click)="d.toggle()"
           type="button"
-          class="btn btn-secondary me-2"
-          (click)="activeModal.dismiss()"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="taskForm.invalid"
-        >
-          Add Task
-        </button>
+        ></button>
       </div>
-    </form>
-  </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="text-end">
+      <button
+        type="button"
+        class="btn btn-secondary me-2"
+        (click)="activeModal.dismiss()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="taskForm.invalid"
+      >
+        Add Task
+      </button>
+    </div>
+  </form>
+</div>
