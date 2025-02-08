@@ -64,9 +64,7 @@ export class DashboardComponent implements OnInit {
       .then((resultTask: Task) => {
         this.getUserTasks();
       })
-      .catch((reason) => {
-        console.log('Modal dismissed:', reason);
-      });
+      .catch((reason) => {});
   }
 
   markAsCompleted(index: number) {
@@ -133,7 +131,7 @@ export class DashboardComponent implements OnInit {
           this.statusOptions = response.lookups['TaskStatus'];
         },
         error: (error) => {
-          console.log('Error: ', error);
+          this.toastr.error(JSON.stringify(error), 'Error Getting Lookups');
         },
       });
   }
@@ -146,7 +144,7 @@ export class DashboardComponent implements OnInit {
         this.tasks = response.tasks ? response.tasks : [];
       },
       error: (error) => {
-        console.log('Error: ', error);
+        this.toastr.error(JSON.stringify(error), 'Error Getting Tasks');
       },
     });
   }
