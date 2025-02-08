@@ -1,11 +1,28 @@
-import { Component, computed, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgbActiveModal, NgbDatepickerModule, NgbDatepicker, NgbDateStruct, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { EditTaskRequest, GetLookupByTableNamesRequest } from '../../../../Services/models/requests';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  NgbActiveModal,
+  NgbDatepickerModule,
+  NgbDatepicker,
+  NgbDateStruct,
+  NgbModalModule,
+} from '@ng-bootstrap/ng-bootstrap';
+import {
+  EditTaskRequest,
+  GetLookupByTableNamesRequest,
+} from '../../../../Services/models/requests';
 import { CommonService } from '../../../../Services/common.service';
 import { Lookup, Task } from '../../../../Services/models/models';
 import { TaskService } from '../../../../Services/task.service';
 import { AuthService } from '../../../../Services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-task-modal',
@@ -15,19 +32,9 @@ import { AuthService } from '../../../../Services/auth.service';
   templateUrl: './edit-task-modal.component.html',
 })
 export class EditTaskModalComponent implements OnInit {
-  @Output() taskAdded = new EventEmitter<Task>();
-  decodedToken = computed(() => this.authService.decodedToken());
+  @Input() task!: Task;
 
-  // Bind all other Task fields normally
-  task: Task = {
-    id: -1,
-    userId: parseInt(this.decodedToken()!['UserId']),
-    title: '',
-    description: '',
-    statusCode: '',
-    categoryCode: '',
-    dueDate: '', // We'll keep the “string” type, but handle it properly
-  };
+  decodedToken = computed(() => this.authService.decodedToken());
 
   // Use a separate model for the datepicker
   dueDateModel: NgbDateStruct | undefined;
@@ -39,11 +46,11 @@ export class EditTaskModalComponent implements OnInit {
     public activeModal: NgbActiveModal,
     public commonService: CommonService,
     private taskService: TaskService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
-    // 1) Initialize dropdowns
     this.getLookupByTableNames();
 
     // 2) If task.dueDate is already set, parse it to an NgbDateStruct
@@ -51,15 +58,19 @@ export class EditTaskModalComponent implements OnInit {
       const existingDate = new Date(this.task.dueDate);
       this.dueDateModel = {
         year: existingDate.getFullYear(),
-        month: existingDate.getMonth() + 1, 
+        month: existingDate.getMonth() + 1,
         day: existingDate.getDate(),
       };
     }
   }
 
   submitForm() {
-    // Validate all required fields
-    if (this.task.title.trim() && this.task.description.trim() && this.task.statusCode && this.task.categoryCode) {
+    if (
+      this.task.title.trim() &&
+      this.task.description.trim() &&
+      this.task.statusCode &&
+      this.task.categoryCode
+    ) {
       this.editTask();
     }
   }
@@ -69,15 +80,20 @@ export class EditTaskModalComponent implements OnInit {
       tableNames: 'TaskStatus,TaskCategory',
     };
 
-    this.commonService.getLookupByTableNames(getLookupByTableNamesRequest).subscribe({
-      next: (response) => {
-        this.statusOptions = response.lookups['TaskStatus'];
-        this.categoryOptions = response.lookups['TaskCategory'];
-      },
-      error: (error) => {
-        console.log('Error: ', error);
-      },
-    });
+    this.commonService
+      .getLookupByTableNames(getLookupByTableNamesRequest)
+      .subscribe({
+        next: (response) => {
+          this.statusOptions = response.lookups['TaskStatus'];
+          this.categoryOptions = response.lookups['TaskCategory'];
+        },
+        error: (error) => {
+          this.toastr.error(
+            JSON.stringify(error),
+            'An error has occured while getting drop downs'
+          );
+        },
+      });
   }
 
   editTask(): void {
@@ -93,12 +109,16 @@ export class EditTaskModalComponent implements OnInit {
 
     this.taskService.editTask(request).subscribe({
       next: (response) => {
-        this.taskAdded.emit(this.task);
-        this.activeModal.close();
+        this.toastr.success('Task has been updated').onHidden.subscribe(() => {
+          this.activeModal.close();
+        });
       },
       error: (error) => {
-        console.log('Error: ', error);
-      }
+        this.toastr.error(
+          JSON.stringify(error),
+          'An error has occured while adding a new task'
+        );
+      },
     });
   }
 }

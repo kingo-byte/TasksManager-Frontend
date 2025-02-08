@@ -5,9 +5,15 @@ import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { EditTaskModalComponent } from '../edit-task-modal/edit-task-modal.component';
 import { Lookup, Task } from '../../../../Services/models/models';
 import { CommonService } from '../../../../Services/common.service';
-import { GetLookupByTableNamesRequest } from '../../../../Services/models/requests';
+import {
+  DeleteTaskRequest,
+  EditTaskRequest,
+  GetLookupByTableNamesRequest,
+} from '../../../../Services/models/requests';
 import { UserService } from '../../../../Services/user.service';
 import { AuthService } from '../../../../Services/auth.service';
+import { TaskService } from '../../../../Services/task.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,71 +23,131 @@ import { AuthService } from '../../../../Services/auth.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  filterText = '';
-  filterStatus = 'INPROGRESS';
-  tasks: Task[]= [];
+  tasks: Task[] = [];
   statusOptions: Lookup[] = [];
-  decodedToken = computed(() => this.authService.decodedToken())
-  
+  decodedToken = computed(() => this.authService.decodedToken());
+
   constructor(
     private modalService: NgbModal,
     private commonService: CommonService,
     private userService: UserService,
-    private authService: AuthService) {}
+    private authService: AuthService,
+    private taskService: TaskService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.getLookupByTableNames();
     this.getUserTasks();
   }
 
-  addNewTask() {
+  editTask(id: number) {
+    const userId: number = parseInt(this.decodedToken()!['UserId']);
     const modalRef = this.modalService.open(EditTaskModalComponent);
-    modalRef.componentInstance.taskAdded.subscribe((newTask: Task) => {
-      window.location.reload(); 
+
+    const currentTask: Task | null =
+      this.tasks.find((task) => task.id === id) ?? null;
+
+    const task: Task = {
+      id: id !== -1 ? currentTask!.id! : -1,
+      userId: currentTask?.userId! ?? userId,
+      title: currentTask?.title ?? '',
+      description: currentTask?.description ?? '',
+      statusCode: currentTask?.statusCode ?? '',
+      categoryCode: currentTask?.categoryCode ?? '',
+      dueDate: currentTask?.dueDate ?? '',
+    };
+
+    modalRef.componentInstance.task = task;
+
+    modalRef.result
+      .then((resultTask: Task) => {
+        this.getUserTasks();
+      })
+      .catch((reason) => {
+        console.log('Modal dismissed:', reason);
+      });
+  }
+
+  markAsCompleted(index: number) {
+    const task: Task = {
+      id: this.tasks[index].id,
+      userId: this.tasks[index].userId,
+      title: this.tasks[index].title,
+      description: this.tasks[index].description,
+      statusCode: 'COMPLETED',
+      categoryCode: this.tasks[index].categoryCode,
+      dueDate: this.tasks[index].dueDate,
+    };
+
+    const request: EditTaskRequest = {
+      task: task,
+    };
+
+    this.taskService.editTask(request).subscribe({
+      next: (response) => {
+        this.toastr
+          .success('Task has been marked as completed')
+          .onHidden.subscribe(() => {
+            this.getUserTasks();
+          });
+      },
+      error: (error) => {
+        this.toastr.error(
+          JSON.stringify(error),
+          'An error has occurred while updating task'
+        );
+      },
     });
   }
 
-  markAsCompleted(task: Task) {
-    task.statusCode = 'COMPLETED';
-  }
+  deleteTask(index: number) {
+    const request: DeleteTaskRequest = {
+      taskId: this.tasks[index].id,
+    };
 
-  get filteredTasks() {
-    const statusFilter = this.filterStatus.trim().toLowerCase();
-    const textFilter = this.filterText.trim().toLowerCase();
-  
-    return this.tasks.filter((task) => {
-      const matchesStatus = task.statusCode.toLowerCase() === statusFilter;
-      const matchesText =
-        !textFilter ||
-        task.title.toLowerCase().startsWith(textFilter) 
-  
-      return matchesStatus && matchesText;
+    this.taskService.deleteTask(request).subscribe({
+      next: (response) => {
+        this.toastr.success('Task has been deleted').onHidden.subscribe(() => {
+          this.tasks.splice(index, 1);
+        });
+      },
+      error: (error) => {
+        this.toastr.error(
+          JSON.stringify(error),
+          'An error has occurred while deleting task'
+        );
+      },
     });
   }
-  
+
   getLookupByTableNames(): void {
-   const getLookupByTableNamesRequest: GetLookupByTableNamesRequest = {  tableNames: 'TaskStatus' };
+    const getLookupByTableNamesRequest: GetLookupByTableNamesRequest = {
+      tableNames: 'TaskStatus',
+    };
 
-   this.commonService.getLookupByTableNames(getLookupByTableNamesRequest).subscribe({
-    next: (response) => {
-      this.statusOptions = response.lookups['TaskStatus'];
-    },
-    error: (error) => { 
-      console.log('Error: ', error);
-    }
-   })
+    this.commonService
+      .getLookupByTableNames(getLookupByTableNamesRequest)
+      .subscribe({
+        next: (response) => {
+          this.statusOptions = response.lookups['TaskStatus'];
+        },
+        error: (error) => {
+          console.log('Error: ', error);
+        },
+      });
   }
 
   getUserTasks(): void {
-    const id: number =  parseInt(this.decodedToken()!['UserId']);
+    const id: number = parseInt(this.decodedToken()!['UserId']);
 
-    this.userService.getUserTasks(id).subscribe({ 
+    this.userService.getUserTasks(id).subscribe({
       next: (response) => {
-        this.tasks = response.tasks ? response.tasks :[];
+        this.tasks = response.tasks ? response.tasks : [];
       },
       error: (error) => {
         console.log('Error: ', error);
-      }
+      },
     });
   }
 }

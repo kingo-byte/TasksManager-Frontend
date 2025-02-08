@@ -23,3 +23,7 @@ export interface SignUpRequest {
   export interface RefreshTokenRequest {
      refreshToken: string;
   }
+
+  export interface DeleteTaskRequest{
+    taskId: number;
+  }
