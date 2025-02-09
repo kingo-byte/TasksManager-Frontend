@@ -28,5 +28,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist/browser # Use the correct output folder
-          branch: prod # Avoid deploying to main
+          branch: main # Avoid deploying to main
           token: ${{ secrets.ANGULAR_DEPLOYMENT_KEY }} # Ensure correct secret is set
