@@ -10,6 +10,8 @@ const routes: Routes = [
     canActivate: [authGuard],
     pathMatch: 'full',
   },
+
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
