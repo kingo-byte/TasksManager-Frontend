@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { refreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 import { provideToastr } from 'ngx-toastr';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,5 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimations(),
     provideToastr(),
-    provideHttpClient(withInterceptors([refreshTokenInterceptor]))]
+    provideHttpClient(withInterceptors([refreshTokenInterceptor])),
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+  ],
 };
