@@ -1,0 +1,32 @@
+name: Angular Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Build the Angular app with production settings
+      - name: Build Angular app to prod
+        run: |
+          npm install
+          npm run build -- --output-path=dist --base-href="/TasksManager-Frontend/"
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/browser # Use the correct output folder
+          branch: prod # Avoid deploying to main
+          token: ${{ secrets.ANGULAR_SHIT }} # Ensure correct secret is set
