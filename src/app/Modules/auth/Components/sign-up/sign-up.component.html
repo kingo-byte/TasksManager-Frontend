@@ -1,1 +1,90 @@
-<p>sign-up works!</p>
+<div class="container-fluid router-content map-container">
+  <div class="row h-100 flex-column">
+    <div class="col">
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <div
+          class="card shadow-lg p-4"
+          style="width: 500px; border-radius: 20px"
+        >
+          <div class="card-body">
+            <h3 class="card-title text-center mb-4" style="color: #007bff">
+              Sign Up
+            </h3>
+            <form [formGroup]="fg" (submit)="onSubmit()">
+              <div class="form-group">
+                <label for="userName">user name</label>
+                <input
+                  type="userName"
+                  id="userName"
+                  class="form-control"
+                  placeholder="enter your user name"
+                  formControlName="userName"
+                  [maxlength]="250"
+                  [ngClass]="{
+                    'border border-danger':
+                      fg.get('userName')!.invalid && fg.get('userName')!.touched
+                  }"
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  [maxlength]="250"
+                  class="form-control"
+                  placeholder="enter your email"
+                  formControlName="email"
+                  [ngClass]="{
+                    'border border-danger':
+                      fg.get('email')!.invalid && fg.get('email')!.touched
+                  }"
+                />
+              </div>
+              <div class="form-group mt-3">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  formControlName="password"
+                  [ngClass]="{
+                    'border border-danger':
+                      fg.get('password')!.invalid && fg.get('password')!.touched
+                  }"
+                />
+              </div>
+              <div class="form-group mt-3">
+                <label for="confirm-password">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirm-password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  formControlName="confirmPassword"
+                  [ngClass]="{
+                    'border border-danger':
+                      fg.get('confirmPassword')!.invalid &&
+                      fg.get('confirmPassword')!.touched
+                  }"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary btn-block btn-login mt-4 w-100"
+                [disabled]="fg.invalid"
+              >
+                Submit
+              </button>
+            </form>
+            <div class="text-center mt-2">
+              <span>Already have an account? </span>
+              <a [routerLink]="['']" class="text-primary">Sign In</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

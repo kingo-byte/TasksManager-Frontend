@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../Services/auth.service';
 import { SignInResponse } from '../../../../Services/models/responses';
 import { ToastrService } from 'ngx-toastr';
@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss',
 })
@@ -30,7 +30,7 @@ export class SignInComponent {
   ) {
     this.signInForm = this.signInBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.pattern('^(?!\\s*$).+')]],
     });
 
     if (this.isLoggedIn()) {

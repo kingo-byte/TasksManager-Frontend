@@ -1,45 +1,62 @@
 <div class="container-fluid router-content map-container">
-    <div class="row h-100 flex-column"> 
-      <div class="col">
-        <div class="d-flex align-items-center justify-content-center h-100">
-            <div class="card shadow-lg p-4" style="width: 500px; border-radius: 20px;">
-              <div class="card-body">
-                <h3 class="card-title text-center mb-4" style="color: #007bff;">Login</h3>
-                <form [formGroup]="signInForm">
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                       type="email"
-                       id="email" 
-                       class="form-control"
-                       placeholder="Enter your email" 
-                       formControlName="email"
-                       [ngClass]="{'border border-danger': signInForm.get('email')!.invalid && signInForm.get('email')!.touched}"/>
-                  </div>
-                  <div class="form-group mt-3">
-                    <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        class="form-control"
-                        placeholder="Enter your password"
-                        formControlName="password"
-                        [ngClass]="{'border border-danger': signInForm.get('password')!.invalid && signInForm.get('password')!.touched}"/>
-                  </div>
-                  <button 
-                        type="button"
-                        class="btn btn-primary btn-block btn-login mt-4 w-100"
-                        (click)="onSignInSubmit()">Sign In</button>
-                </form>
-                <div class="text-center mt-3">
-                  <a href="#" class="text-muted">Forgot your password?</a>
-                </div>
+  <div class="row h-100 flex-column">
+    <div class="col">
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <div
+          class="card shadow-lg p-4"
+          style="width: 500px; border-radius: 20px"
+        >
+          <div class="card-body">
+            <h3 class="card-title text-center mb-4" style="color: #007bff">
+              Login
+            </h3>
+            <form [formGroup]="signInForm" (submit)="onSignInSubmit()">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  [maxlength]="250"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  formControlName="email"
+                  [ngClass]="{
+                    'border border-danger':
+                      signInForm.get('email')!.invalid &&
+                      signInForm.get('email')!.touched
+                  }"
+                />
               </div>
+              <div class="form-group mt-3">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  formControlName="password"
+                  [ngClass]="{
+                    'border border-danger':
+                      signInForm.get('password')!.invalid &&
+                      signInForm.get('password')!.touched
+                  }"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary btn-block btn-login mt-4 w-100"
+                [disabled]="signInForm.invalid"
+              >
+                Sign In
+              </button>
+            </form>
+            <div class="text-center mt-2">
+              <span>Don't have an account? </span>
+              <a [routerLink]="['/sign-up']" class="text-primary">Sign Up</a>
             </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
-
-
-  
+</div>
