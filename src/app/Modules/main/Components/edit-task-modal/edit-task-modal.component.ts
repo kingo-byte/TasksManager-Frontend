@@ -109,9 +109,8 @@ export class EditTaskModalComponent implements OnInit {
 
     this.taskService.editTask(request).subscribe({
       next: (response) => {
-        this.toastr.success('Task has been updated').onHidden.subscribe(() => {
-          this.activeModal.close();
-        });
+        this.toastr.success('New Task has been added');
+        this.activeModal.close();
       },
       error: (error) => {
         this.toastr.error(

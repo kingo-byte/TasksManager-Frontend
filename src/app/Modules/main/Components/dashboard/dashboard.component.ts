@@ -84,11 +84,8 @@ export class DashboardComponent implements OnInit {
 
     this.taskService.editTask(request).subscribe({
       next: (response) => {
-        this.toastr
-          .success('Task has been marked as completed')
-          .onHidden.subscribe(() => {
-            this.getUserTasks();
-          });
+        this.toastr.success('Task has been marked as completed');
+        this.getUserTasks();
       },
       error: (error) => {
         this.toastr.error(
@@ -106,9 +103,8 @@ export class DashboardComponent implements OnInit {
 
     this.taskService.deleteTask(request).subscribe({
       next: (response) => {
-        this.toastr.success('Task has been deleted').onHidden.subscribe(() => {
-          this.tasks.splice(index, 1);
-        });
+        this.toastr.success('Task has been deleted');
+        this.tasks.splice(index, 1);
       },
       error: (error) => {
         this.toastr.error(
