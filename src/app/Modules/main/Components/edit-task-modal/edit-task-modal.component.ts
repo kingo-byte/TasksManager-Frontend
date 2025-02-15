@@ -97,12 +97,12 @@ export class EditTaskModalComponent implements OnInit {
   }
 
   editTask(): void {
-    // 3) Convert the local NgbDateStruct to a real Date, then to ISO string
     if (this.dueDateModel) {
       const { year, month, day } = this.dueDateModel;
-      this.task.dueDate = new Date(year, month - 1, day).toISOString();
+      this.task.dueDate = new Date(
+        Date.UTC(year, month - 1, day)
+      ).toISOString();
     }
-
     const request: EditTaskRequest = {
       task: this.task,
     };
