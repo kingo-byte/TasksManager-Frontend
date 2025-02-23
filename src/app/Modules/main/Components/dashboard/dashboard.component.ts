@@ -88,10 +88,14 @@ export class DashboardComponent implements OnInit {
         this.getUserTasks();
       },
       error: (error) => {
-        this.toastr.error(
-          JSON.stringify(error),
-          'An error has occurred while updating task'
-        );
+        const errorsObj = error.error.errors;
+        let message: string = '';
+        for (const key in errorsObj) {
+          if (errorsObj.hasOwnProperty(key)) {
+            message += `${errorsObj[key].join(', ')}\n`;
+          }
+        }
+        this.toastr.error(message, error.error.title);
       },
     });
   }
@@ -107,10 +111,14 @@ export class DashboardComponent implements OnInit {
         this.tasks.splice(index, 1);
       },
       error: (error) => {
-        this.toastr.error(
-          JSON.stringify(error),
-          'An error has occurred while deleting task'
-        );
+        const errorsObj = error.error.errors;
+        let message: string = '';
+        for (const key in errorsObj) {
+          if (errorsObj.hasOwnProperty(key)) {
+            message += `${errorsObj[key].join(', ')}\n`;
+          }
+        }
+        this.toastr.error(message, error.error.title);
       },
     });
   }
@@ -127,7 +135,14 @@ export class DashboardComponent implements OnInit {
           this.statusOptions = response.lookups['TaskStatus'];
         },
         error: (error) => {
-          this.toastr.error(JSON.stringify(error), 'Error Getting Lookups');
+          const errorsObj = error.error.errors;
+          let message: string = '';
+          for (const key in errorsObj) {
+            if (errorsObj.hasOwnProperty(key)) {
+              message += `${errorsObj[key].join(', ')}\n`;
+            }
+          }
+          this.toastr.error(message, error.error.title);
         },
       });
   }

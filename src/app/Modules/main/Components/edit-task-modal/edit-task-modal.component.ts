@@ -88,10 +88,14 @@ export class EditTaskModalComponent implements OnInit {
           this.categoryOptions = response.lookups['TaskCategory'];
         },
         error: (error) => {
-          this.toastr.error(
-            JSON.stringify(error),
-            'An error has occured while getting drop downs'
-          );
+         const errorsObj = error.error.errors;
+         let message: string = '';
+         for (const key in errorsObj) {
+           if (errorsObj.hasOwnProperty(key)) {
+             message += `${errorsObj[key].join(', ')}\n`;
+           }
+         }
+         this.toastr.error(message, error.error.title);
         },
       });
   }
@@ -113,10 +117,14 @@ export class EditTaskModalComponent implements OnInit {
         this.activeModal.close();
       },
       error: (error) => {
-        this.toastr.error(
-          JSON.stringify(error),
-          'An error has occured while adding a new task'
-        );
+       const errorsObj = error.error.errors;
+       let message: string = '';
+       for (const key in errorsObj) {
+         if (errorsObj.hasOwnProperty(key)) {
+           message += `${errorsObj[key].join(', ')}\n`;
+         }
+       }
+       this.toastr.error(message, error.error.title);
       },
     });
   }

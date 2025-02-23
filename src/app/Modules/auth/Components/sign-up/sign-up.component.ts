@@ -76,7 +76,14 @@ export class SignUpComponent implements OnInit {
           });
       },
       error: (error) => {
-        this.toastr.error(JSON.stringify(error), 'Error Signing up');
+        const errorsObj = error.error.errors;
+        let message: string = '';
+        for (const key in errorsObj) {
+          if (errorsObj.hasOwnProperty(key)) {
+            message += `${errorsObj[key].join(', ')}\n`;
+          }
+        }
+        this.toastr.error(message, error.error.title);
       },
     });
   }

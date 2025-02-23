@@ -54,8 +54,15 @@ export class SignInComponent {
           this.authService.isLoggedInSignal.set(true);
           this.router.navigate(['main']);
         },
-        error: (error: HttpErrorResponse) => {
-          this.toastr.error(JSON.stringify(error), 'Error Signing in');
+        error: (error) => {
+          const errorsObj = error.error.errors;
+          let message: string = '';
+          for (const key in errorsObj) {
+            if (errorsObj.hasOwnProperty(key)) {
+              message += `${errorsObj[key].join(', ')}\n`;
+            }
+          }
+          this.toastr.error(message, error.error.title);
         },
       });
     } else {

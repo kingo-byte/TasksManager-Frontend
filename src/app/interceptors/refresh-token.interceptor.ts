@@ -18,11 +18,7 @@ import { RefreshTokenRequest } from '../Services/models/requests';
  * This is shared by all calls to the interceptor.
  */
 const isRefreshing$ = new BehaviorSubject<boolean>(false);
-export const REFRESH_URL_BLACKLIST = [
-  'signIn',
-  'signUp',
-  'refreshToken'
-];
+export const REFRESH_URL_BLACKLIST = ['signIn', 'signUp', 'refreshToken'];
 
 export const refreshTokenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -64,7 +60,6 @@ function handle401(
   authService: AuthService,
   toastr: ToastrService
 ): Observable<HttpEvent<unknown>> {
-  
   // If we're not already refreshing, do a refresh
   if (!isRefreshing$.getValue()) {
     isRefreshing$.next(true);
@@ -73,8 +68,8 @@ function handle401(
 
     if (refreshToken) {
       const refreshTokenRequest: RefreshTokenRequest = {
-        refreshToken: refreshToken, 
-      }
+        refreshToken: refreshToken,
+      };
 
       return authService.refreshToken(refreshTokenRequest).pipe(
         tap(({ accessToken, refreshToken }) => {
@@ -90,14 +85,16 @@ function handle401(
           // If refresh fails, notify the AuthService and throw
           isRefreshing$.next(false);
 
-          toastr.error('Session TimedOut', 'Error', {
-            progressBar: true,
-            timeOut: 5000,
-            closeButton: false,
-            easing: 'ease-in'
-         }).onHidden.subscribe(()=>{
-          authService.logout();
-        });
+          toastr
+            .error('Session TimedOut', 'Error', {
+              progressBar: true,
+              timeOut: 5000,
+              closeButton: false,
+              easing: 'ease-in',
+            })
+            .onHidden.subscribe(() => {
+              authService.logout();
+            });
 
           return throwError(() => err);
         })
@@ -105,14 +102,16 @@ function handle401(
     }
     // If no refresh token, force log out or handle error
     isRefreshing$.next(false);
-    toastr.error('Missing refresh token', 'Error', {
-       progressBar: true,
-       timeOut: 5000,
-       closeButton: false,
-       easing: 'ease-in',
-    }).onHidden.subscribe(()=>{
-      authService.logout();
-    });
+    toastr
+      .error('Missing refresh token', 'Error', {
+        progressBar: true,
+        timeOut: 5000,
+        closeButton: false,
+        easing: 'ease-in',
+      })
+      .onHidden.subscribe(() => {
+        authService.logout();
+      });
   }
 
   // If we're already refreshing, wait until it's done, then retry
