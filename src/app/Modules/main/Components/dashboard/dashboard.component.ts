@@ -155,7 +155,14 @@ export class DashboardComponent implements OnInit {
         this.tasks = response.tasks ? response.tasks : [];
       },
       error: (error) => {
-        this.toastr.error(JSON.stringify(error), 'Error Getting Tasks');
+        const errorsObj = error.error.errors;
+        let message: string = '';
+        for (const key in errorsObj) {
+          if (errorsObj.hasOwnProperty(key)) {
+            message += `${errorsObj[key].join(', ')}\n`;
+          }
+        }
+        this.toastr.error(message, error.error.title);
       },
     });
   }
