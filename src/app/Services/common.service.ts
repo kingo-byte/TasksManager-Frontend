@@ -3,17 +3,20 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GetLookupByTableNamesRequest } from './models/requests';
 import { GetLookupByTableNamesResponse } from './models/responses';
-import { Environment }  from '../Environment/environment.dev';
+import { Environment } from '../Environment/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommonService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getLookupByTableNames(request: GetLookupByTableNamesRequest): Observable<GetLookupByTableNamesResponse>
-  {
-      return this.http.post<GetLookupByTableNamesResponse>(`${Environment.apiUrl}/api/Common/GetLookupByTableNames`, request);
+  getLookupByTableNames(
+    request: GetLookupByTableNamesRequest
+  ): Observable<GetLookupByTableNamesResponse> {
+    return this.http.post<GetLookupByTableNamesResponse>(
+      `${Environment.apiUrl}/api/Common/GetLookupByTableNames`,
+      request
+    );
   }
 }

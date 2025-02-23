@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DeleteTaskRequest, EditTaskRequest } from './models/requests';
-import { Environment } from '../Environment/environment.dev';
+import { Environment } from '../Environment/environment';
 
 @Injectable({
   providedIn: 'root',

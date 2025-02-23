@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import * as jwt_decode from 'jwt-decode';
 import { Observable } from 'rxjs';
-import { Environment } from '../Environment/environment.dev';
+import { Environment } from '../Environment/environment';
 import {
   RefreshTokenRequest,
   SignInRequest,
